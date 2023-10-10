@@ -577,7 +577,8 @@ public class Controller implements Initializable{
 				}
 				
 				if(finalScore >= min && finalScore <= max) {
-					students.get(i).setGrade(grade.getGradeName());
+//					students.get(i).setGrade(finalScore+"");
+					students.get(i).setGrade(grade.getGradeName() + "  (" +finalScore + "%)");
 					break;
 				}
 			}
