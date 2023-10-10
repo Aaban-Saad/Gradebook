@@ -576,7 +576,7 @@ public class Controller implements Initializable{
 					max = Double.MAX_VALUE;
 				}
 				
-				if(finalScore >= min && finalScore <= max) {
+				if(Math.ceil(finalScore) >= min && finalScore <= max) {
 //					students.get(i).setGrade(finalScore+"");
 					students.get(i).setGrade(grade.getGradeName() + "  (" +finalScore + "%)");
 					break;
