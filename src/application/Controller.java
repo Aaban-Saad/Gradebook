@@ -542,11 +542,11 @@ public class Controller implements Initializable{
 		
 		ObservableList<Assessment> assessmentsForGrade = assessmentMarksTable.getItems();
 		int i, j;
-		for(i = 0; i < assessmentsForGrade.size(); i++) {
-			if(!assessmentsForGrade.get(i).isCountableForGrade()) {
-				assessmentsForGrade.remove(i);
-			}
-		}
+//		for(i = 0; i < assessmentsForGrade.size(); i++) {
+//			if(!assessmentsForGrade.get(i).isCountableForGrade()) {
+//				assessmentsForGrade.remove(i);
+//			}
+//		}
 		
 		ObservableList<Student> students = tableView.getItems();
 
@@ -554,6 +554,7 @@ public class Controller implements Initializable{
 		for(i = 0; i < students.size(); i++) {
 			finalScore = 0.0;
 			for(j = 0; j < assessmentsForGrade.size(); j++) {
+				if(!assessmentsForGrade.get(j).isCountableForGrade()) continue;
 				String assessmentName = assessmentsForGrade.get(j).getAssessmentName();
 				double mark = Double.parseDouble(students.get(i).getMark(assessmentName));
 				finalScore += mark * assessmentsForGrade.get(j).getAssessmentWeight() / assessmentsForGrade.get(j).getAssessmentFullMark();
@@ -674,7 +675,7 @@ public class Controller implements Initializable{
 			public void handle(CellEditEvent<Student, String> arg0) {
 				if(!tableIsLocked) {
 					Student student = arg0.getRowValue();
-					student.setName(arg0.getNewValue());
+					student.setId(arg0.getNewValue());
 				}
 				tableView.refresh();
 			}

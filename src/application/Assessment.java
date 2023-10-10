@@ -42,6 +42,7 @@ public class Assessment {
 	}
 	public void setCountableForGradeCheckBox(CheckBox countableForGradeCheckBox) {
 		this.countableForGradeCheckBox = countableForGradeCheckBox;
+		System.out.println(isCountableForGrade());
 	}
 	
 	
