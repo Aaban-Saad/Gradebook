@@ -39,10 +39,10 @@ public class Student {
 		this.name = name;
 	}
 	
-	public ArrayList<String> getAssessmentNames() {
+	public static ArrayList<String> getAssessmentNames() {
 		return Student.assessmentNames;
 	}
-	public void setAssessmentNames(ArrayList<String> assessmentNames) {
+	public static void setAssessmentNames(ArrayList<String> assessmentNames) {
 		Student.assessmentNames = assessmentNames;
 	}
 	public ArrayList<String> getAssessmentMarks() {
