@@ -6,24 +6,30 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class GradeWriter {
-    private String filePath;
+    private File file;
+    BufferedWriter writer;
 
-    public GradeWriter(String filePath) {
-        this.filePath = filePath;
+    public GradeWriter(File file) {
+        this.file = file;
+        try {
+			this.writer = new BufferedWriter(new FileWriter(file));
+		} catch (IOException e) {
+			
+		}
     }
 
-    public String getFilePath() {
-        return filePath;
+    public File getfile() {
+        return file;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setfile(File file) {
+        this.file = file;
     }
 
     public void writeGradebook(String version) {
 
         String gradebookData = "<Gradebook>\nVersion = " + version + "\nDateCreated = " + new Date() +"\n</Gradebook>";
-        writeToFile(filePath, gradebookData);
+        writeToFile(file, gradebookData);
     }
 
     public void writeAssessment(ArrayList<Assessment> assessments) {
@@ -37,7 +43,7 @@ public class GradeWriter {
                     .append(assessment.isCountableForGrade()).append("\n");
         }
         assessmentData.append("</Assessments>");
-        writeToFile(filePath, assessmentData.toString());
+        writeToFile(file, assessmentData.toString());
     }
 
     public void writeStudent(ArrayList<Student> students) {
@@ -53,14 +59,15 @@ public class GradeWriter {
                     .append(student.getGrade());
 
             marks = student.getAssessmentMarks();
-            if(marks.size() == 0) continue;
-            for (String mark : marks) {
-                studentData.append(",").append(mark);
+            if(marks.size() != 0) {
+            	for (String mark : marks) {
+            		studentData.append(",").append(mark);
+            	}
             }
             studentData.append("\n");
         }
         studentData.append("</Students>");
-        writeToFile(filePath, studentData.toString());
+        writeToFile(file, studentData.toString());
     }
 
     public void writeGrade(ArrayList<Grade> grades) {
@@ -73,14 +80,12 @@ public class GradeWriter {
                     .append(grade.getMaxNumber()).append("\n");
         }
         gradeData.append("</Grading>");
-        writeToFile(filePath, gradeData.toString());
+        writeToFile(file, gradeData.toString());
     }
 
-    private void writeToFile(String filePath, String data) {
+    private void writeToFile(File file, String data) {
         try  {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
             writer.write(data + "\n\n");
-            writer.close();
             
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
@@ -88,7 +93,7 @@ public class GradeWriter {
     }
 
     public String readGradebook() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             StringBuilder gradebookData = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -102,7 +107,7 @@ public class GradeWriter {
     }
     public ArrayList<Assessment> readAssessment() {
         ArrayList<Assessment> assessments = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             boolean inAssessmentsSection = false;
             while ((line = reader.readLine()) != null) {
@@ -133,7 +138,7 @@ public class GradeWriter {
 
     public ArrayList<Student> readStudent() {
         ArrayList<Student> students = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             boolean inStudentsSection = false;
             while ((line = reader.readLine()) != null) {
@@ -170,7 +175,7 @@ public class GradeWriter {
 
     public ArrayList<Grade> readGrade() {
         ArrayList<Grade> grades = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             boolean inGradingSection = false;
             while ((line = reader.readLine()) != null) {
@@ -198,7 +203,7 @@ public class GradeWriter {
         return grades;
     }
 
-    public void ExportCSV(ArrayList<Student> students, String file) {
+    public void ExportCSV(ArrayList<Student> students) {
 
         StringBuilder studentData = new StringBuilder("");
         ArrayList<String> marks = new ArrayList<>();
@@ -208,12 +213,12 @@ public class GradeWriter {
                     .append("Name").append(",")
                     .append("Grade");
         marks = Student.getAssessmentNames();
-        if(marks.size() == 0){
+        if(marks.size() != 0){
             for (String mark : marks) {
                 studentData.append(",").append(mark);
             }
-            studentData.append("\n");
         }
+        studentData.append("\n");
 
         for (Student student : students) {
             studentData.append(student.getSn()).append(",")
@@ -222,24 +227,31 @@ public class GradeWriter {
                     .append(student.getGrade());
 
             marks = student.getAssessmentMarks();
-            if(marks.size() == 0) continue;
-            for (String mark : marks) {
-                studentData.append(",").append(mark);
+            if(marks.size() != 0) {
+            	for (String mark : marks) {
+            		studentData.append(",").append(mark);
+            	}
             }
             studentData.append("\n");
         }
         writeToCsvFile(file, studentData.toString());
     }
 
-    private void writeToCsvFile(String filePath, String data) {
+    public void writeToCsvFile(File file, String data) {
         try  {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
             writer.write(data + "\n\n");
-            writer.close();
             
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+    
+    public void close() {
+		try {
+			writer.close();
+		} catch (IOException e) {
+
+		}
+	}
 
 }

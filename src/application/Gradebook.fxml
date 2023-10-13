@@ -66,16 +66,11 @@
           <items>
             <MenuItem mnemonicParsing="false" text="New" />
             <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
             <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
+            <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem mnemonicParsing="false" onAction="#saveCSV" text="Export CSV" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">

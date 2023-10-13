@@ -1,10 +1,10 @@
 package application;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,11 +25,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.shape.TriangleMesh;
+import javafx.stage.FileChooser;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.util.converter.LongStringConverter;
 
 public class Controller implements Initializable{
 	//These 2 has to be initialized from file first;
@@ -38,8 +36,10 @@ public class Controller implements Initializable{
 	
 	//private ArrayList<CheckBox> checkBoxes = new ArrayList<>(); //this is for mark calculation on the left side
 	
-	private boolean tableIsLocked = false;
+	File savingFile;
 	
+	private boolean tableIsLocked = false;
+	private boolean fileExists = false;
 	
 	@FXML
     private CheckBox lockTable;
@@ -652,11 +652,15 @@ public class Controller implements Initializable{
 	}
 	
 	public void saveFile() {
-		GradeWriter gradeWriter = new GradeWriter("Test.grade");
+		if(!fileExists) {
+			fileExists = true;
+			saveAs();
+			return;
+		}
 		
 		ArrayList<Student> students = new ArrayList<>();
 		ObservableList<Student> studentsoList = tableView.getItems();
-		for (Student student : studentsoList) {
+		for (Student student : studentsoList) {	
 			students.add(student);
 		}
 		
@@ -666,10 +670,55 @@ public class Controller implements Initializable{
 			grades.add(grade);
 		}
 		
+		GradeWriter gradeWriter = new GradeWriter(savingFile);
 		gradeWriter.writeGradebook("alpha");
 		gradeWriter.writeAssessment(assessmentsArrayList);
 		gradeWriter.writeStudent(students);
 		gradeWriter.writeGrade(grades);
+		gradeWriter.close();
+	}
+	
+	public void saveAs() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Gradebook File", "*.grade"));
+		File file = fileChooser.showSaveDialog(null);
+		savingFile = file;
+		
+		ArrayList<Student> students = new ArrayList<>();
+		ObservableList<Student> studentsoList = tableView.getItems();
+		for (Student student : studentsoList) {	
+			students.add(student);
+		}
+		
+		ArrayList<Grade> grades = new ArrayList<>();
+		ObservableList<Grade> gradesoList = gradingTable.getItems();
+		for (Grade grade : gradesoList) {
+			grades.add(grade);
+		}
+		
+		GradeWriter gradeWriter = new GradeWriter(file);
+		gradeWriter.writeGradebook("alpha");
+		gradeWriter.writeAssessment(assessmentsArrayList);
+		gradeWriter.writeStudent(students);
+		gradeWriter.writeGrade(grades);
+		gradeWriter.close();
+	}
+	
+	public void saveCSV() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV File", "*.csv"));
+		File file = fileChooser.showSaveDialog(null);
+		
+		ArrayList<Student> students = new ArrayList<>();
+		ObservableList<Student> studentsoList = tableView.getItems();
+		for (Student student : studentsoList) {	
+			students.add(student);
+		}
+		
+		GradeWriter gradeWriter = new GradeWriter(file);
+		gradeWriter.ExportCSV(students);
+		gradeWriter.close();
+		
 	}
 	
 
