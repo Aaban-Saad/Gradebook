@@ -26,7 +26,7 @@ public class GradeWriter {
         writeToFile(filePath, gradebookData);
     }
 
-    public void writeAssessment(ArrayList<Assessment> assessments, String file) {
+    public void writeAssessment(ArrayList<Assessment> assessments) {
 
         StringBuilder assessmentData = new StringBuilder("<Assessments>\n");
         for (Assessment assessment : assessments) {
@@ -37,7 +37,7 @@ public class GradeWriter {
                     .append(assessment.isCountableForGrade()).append("\n");
         }
         assessmentData.append("</Assessments>");
-        writeToFile(file, assessmentData.toString());
+        writeToFile(filePath, assessmentData.toString());
     }
 
     public void writeStudent(ArrayList<Student> students) {
@@ -57,8 +57,9 @@ public class GradeWriter {
             for (String mark : marks) {
                 studentData.append(",").append(mark);
             }
-            studentData.append("\n</Students>");
+            studentData.append("\n");
         }
+        studentData.append("</Students>");
         writeToFile(filePath, studentData.toString());
     }
 

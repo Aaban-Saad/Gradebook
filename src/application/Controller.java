@@ -651,6 +651,27 @@ public class Controller implements Initializable{
 		gradingTable.refresh();
 	}
 	
+	public void saveFile() {
+		GradeWriter gradeWriter = new GradeWriter("Test.grade");
+		
+		ArrayList<Student> students = new ArrayList<>();
+		ObservableList<Student> studentsoList = tableView.getItems();
+		for (Student student : studentsoList) {
+			students.add(student);
+		}
+		
+		ArrayList<Grade> grades = new ArrayList<>();
+		ObservableList<Grade> gradesoList = gradingTable.getItems();
+		for (Grade grade : gradesoList) {
+			grades.add(grade);
+		}
+		
+		gradeWriter.writeGradebook("alpha");
+		gradeWriter.writeAssessment(assessmentsArrayList);
+		gradeWriter.writeStudent(students);
+		gradeWriter.writeGrade(grades);
+	}
+	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
