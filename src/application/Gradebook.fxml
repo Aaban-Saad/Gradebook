@@ -65,7 +65,7 @@
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
+            <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open…" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save" />
             <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save As…" />
@@ -150,7 +150,7 @@
                                              <content>
                                                 <VBox>
                                                    <children>
-                                                      <ListView fx:id="listViewForMarkCalculation" VBox.vgrow="ALWAYS" />
+                                                      <ListView fx:id="listViewForMarkCalculation" prefWidth="50.0" VBox.vgrow="ALWAYS" />
                                                    </children>
                                                 </VBox>
                                              </content>

@@ -130,77 +130,11 @@ public class GradeWriter {
                     }
                 }
             }
+            reader.close();
         } catch (IOException e) {
             System.err.println("Error reading Assessments: " + e.getMessage());
         }
         return assessments;
-    }
-
-    public ArrayList<Student> readStudent() {
-        ArrayList<Student> students = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            boolean inStudentsSection = false;
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().equalsIgnoreCase("<Students>")) {
-                    inStudentsSection = true;
-                    continue;
-                }
-                if (line.trim().equalsIgnoreCase("</Students>")) {
-                    break;
-                }
-                if (inStudentsSection) {
-                    String[] parts = line.split(",");
-                    if (parts.length >= 4) {
-                        Student student = new Student();
-                        student.setSn(Integer.parseInt(parts[0]));
-                        student.setId(parts[1]);
-                        student.setName(parts[2]);
-                        student.setGrade(parts[3]);
-
-                        ArrayList<String> marks = new ArrayList<>();
-                        for(int i = 4; i < parts.length; i++) {
-                            marks.add(parts[i]);
-                        }
-                        student.setAssessmentMarks(marks);
-                        students.add(student);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading Students: " + e.getMessage());
-        }
-        return students;
-    }
-
-    public ArrayList<Grade> readGrade() {
-        ArrayList<Grade> grades = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            boolean inGradingSection = false;
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().equals("<Grading>")) {
-                    inGradingSection = true;
-                    continue;
-                }
-                if (line.trim().equals("</Grading>")) {
-                    break;
-                }
-                if (inGradingSection) {
-                    String[] parts = line.split(",");
-                    if (parts.length >= 3) {
-                        Grade grade = new Grade();
-                        grade.setGradeName(parts[0]);
-                        grade.setMinNumber(parts[1]);
-                        grade.setMaxNumber(parts[2]);
-                        grades.add(grade);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading Grades: " + e.getMessage());
-        }
-        return grades;
     }
 
     public void ExportCSV(ArrayList<Student> students) {
