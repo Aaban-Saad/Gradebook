@@ -1,7 +1,6 @@
 package application;
 
 import java.io.File;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
@@ -133,6 +133,12 @@ public class Controller implements Initializable{
 
     @FXML
     private TableColumn<Grade, String> gradeNameCol;
+    
+    @FXML
+    private Label leftStatus;
+    
+    @FXML
+    private Label rightStatus;
 
 
     
@@ -175,6 +181,8 @@ public class Controller implements Initializable{
 		enterId.clear();
 		enterName.clear();
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	
@@ -262,6 +270,8 @@ public class Controller implements Initializable{
 		enterAssessment.clear();
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	
@@ -277,6 +287,8 @@ public class Controller implements Initializable{
 		}
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void lockTable(ActionEvent event) {
@@ -303,6 +315,8 @@ public class Controller implements Initializable{
 		idToRemove.clear();
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void removeAssessment(ActionEvent event) {
@@ -347,6 +361,8 @@ public class Controller implements Initializable{
 		}
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	
@@ -368,6 +384,8 @@ public class Controller implements Initializable{
 			bonusTextField.setDisable(false);
 		} 
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void calculateMark(ActionEvent event) {
@@ -542,6 +560,8 @@ public class Controller implements Initializable{
 		}
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void calculateGrade() {
@@ -573,13 +593,13 @@ public class Controller implements Initializable{
 			ObservableList<Grade> grades = gradingTable.getItems();
 			for (Grade grade : grades) {
 				double min, max;
-				if(!grade.getMinNumber().equals("*")) {					
+				if(!grade.getMinNumber().trim().equals("*")) {					
 					min = Double.parseDouble(grade.getMinNumber());
 				} else {
 					min = Double.MIN_VALUE;
 				}
 				
-				if(!grade.getMaxNumber().equals("*")) {					
+				if(!grade.getMaxNumber().trim().equals("*")) {					
 					max = Double.parseDouble(grade.getMaxNumber());
 				} else {
 					max = Double.MAX_VALUE;
@@ -624,6 +644,8 @@ public class Controller implements Initializable{
 		
 		fileIsSaved = false;
 		
+		setFooter(savingFile);
+		
 	}
 	
 	public void addGrade() {
@@ -634,6 +656,8 @@ public class Controller implements Initializable{
 		gradingTable.refresh();
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void removeGrade() {
@@ -645,6 +669,8 @@ public class Controller implements Initializable{
 		}
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void getDefaultGradingTable() {
@@ -666,6 +692,8 @@ public class Controller implements Initializable{
 		gradingTable.refresh();
 		
 		fileIsSaved = false;
+		
+		setFooter(savingFile);
 	}
 	
 	public void saveFile() {
@@ -695,12 +723,15 @@ public class Controller implements Initializable{
 		gradeWriter.close();
 		
 		fileIsSaved = true;
+		
+		setFooter(savingFile);
 	}
 	
 	public void saveAs() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Gradebook File", "*.grade"));
 		File file = fileChooser.showSaveDialog(null);
+		if(file == null) return;
 		savingFile = file;
 		
 		ArrayList<Student> students = new ArrayList<>();
@@ -723,12 +754,15 @@ public class Controller implements Initializable{
 		gradeWriter.close();
 		
 		fileIsSaved = true;
+		
+		setFooter(file);
 	}
 	
 	public void saveCSV() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV File", "*.csv"));
 		File file = fileChooser.showSaveDialog(null);
+		if(file == null) return;
 		
 		ArrayList<Student> students = new ArrayList<>();
 		ObservableList<Student> studentsoList = tableView.getItems();
@@ -754,7 +788,22 @@ public class Controller implements Initializable{
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Gradebook File", "*.grade"));
 		File file = fileChooser.showOpenDialog(new Stage());
 		
-		if(file.equals(savingFile)) return;
+		if(file == null) return;
+		
+		//removing table columns
+		for(int i = 0; i < tableView.getColumns().size(); i++) {
+			System.out.println(tableView.getColumns().get(i).getText());
+			if(tableView.getColumns().get(i).getText().equals("SN")  ||
+			tableView.getColumns().get(i).getText().equals("ID") ||
+			tableView.getColumns().get(i).getText().equals("Name") ||
+			tableView.getColumns().get(i).getText().equals("Grade")) {
+				
+				continue;
+			}
+			tableView.getColumns().remove(i);
+			i--;
+			
+		}
 		
 		GradeReader gradeReader = new GradeReader(file);
 		ArrayList<Student> students = gradeReader.readStudent();
@@ -792,9 +841,6 @@ public class Controller implements Initializable{
 			gradeoList.add(grade);
 		}
 		
-		tableView.setItems(studentoList);
-		assessmentMarksTable.setItems(assessmetoList);
-		gradingTable.setItems(gradeoList);
 		
 		this.assessmentsArrayList = assessments;
 		
@@ -804,24 +850,117 @@ public class Controller implements Initializable{
 		}
 		
 		//for removing assessment later
-		assessmentChoiceBox.getItems().removeAll(assessmentNames);
-		assessmentChoiceBox.getItems().addAll(assessmentNames); 
+		assessmentChoiceBox.getItems().clear();
+		assessmentChoiceBox.getItems().addAll(assessmentNames);
 		
-		choiceBoxForMarkCalculation.getItems().removeAll(assessmentNames);
-		choiceBoxForMarkCalculation.getItems().addAll(assessmentNames); 
+		choiceBoxForMarkCalculation.getItems().clear();
+		choiceBoxForMarkCalculation.getItems().addAll(assessmentNames);
 
 		//Now adding choice boxes on the left side
 		for (Assessment assessment : assessments) {			
 			CheckBox assessmentCheckBox = new CheckBox();
 			assessmentCheckBox.setText(assessment.getAssessmentName());
 			listViewForMarkCalculation.getItems().add(assessmentCheckBox);
+			
+			TableColumn<Student, String> assessmentCol = new TableColumn<> (assessment.getAssessmentName());
+			initializeColumn(assessmentCol, assessment.getAssessmentName());
 		}
+		
+		tableView.setItems(studentoList);
+		assessmentMarksTable.setItems(assessmetoList);
+		gradingTable.setItems(gradeoList);
 		
 		savingFile = file;
 		saveFileExists = true;
 		fileIsSaved = true;
+		
+		setFooter(file);
+	}
+	
+	private void initializeColumn(TableColumn<Student, String> column, String colName) {
+		column.setCellValueFactory(c -> {
+		    Student student = c.getValue();
+		    String mark = student.getMark(colName);
+
+		    return new ReadOnlyObjectWrapper<>(mark);
+		});
+		
+		column.setCellFactory(TextFieldTableCell.forTableColumn());
+		column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Student,String>>() {
+			@Override
+			public void handle(CellEditEvent<Student, String> arg0) {
+				
+				Student student = arg0.getRowValue();
+				String newMark = arg0.getNewValue();
+				student.setMark(colName, newMark);
+				
+				tableView.refresh();
+			}
+		});;
+		tableView.getColumns().add(column);
 	}
 
+	public void newFile() {
+		if(!fileIsSaved) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Gradebook");
+			alert.setHeaderText("Do you want to save changes to the current file?");
+			if(alert.showAndWait().get() == ButtonType.OK) {
+				saveFile();
+			}			
+		}
+		
+
+		for(int i = 0; i < tableView.getColumns().size(); i++) {
+			System.out.println(tableView.getColumns().get(i).getText());
+			if(tableView.getColumns().get(i).getText().equals("SN")  ||
+			tableView.getColumns().get(i).getText().equals("ID") ||
+			tableView.getColumns().get(i).getText().equals("Name") ||
+			tableView.getColumns().get(i).getText().equals("Grade")) {
+				
+				continue;
+			}
+			tableView.getColumns().remove(i);
+			i--;
+			
+		}
+		
+		this.assessmentNames.clear();
+		this.assessmentsArrayList.clear();
+		//for removing assessment later
+		assessmentChoiceBox.getItems().clear();
+		
+		choiceBoxForMarkCalculation.getItems().clear();
+		
+		ObservableList<Student> studentoList = tableView.getItems();
+		studentoList.clear();
+		ObservableList<Assessment> assessmetoList = assessmentMarksTable.getItems();
+		assessmetoList.clear();
+		ObservableList<Grade> gradeoList = gradingTable.getItems();
+		gradeoList.clear();
+		listViewForMarkCalculation.getItems().clear();
+		
+		savingFile = null;
+		saveFileExists = false;
+		fileIsSaved = false;
+		
+		File file = null;
+		setFooter(file);
+	}
+	
+	private void setFooter(File file) {
+		if(file != null && fileIsSaved) {			
+			leftStatus.setText(file.getAbsolutePath());
+			rightStatus.setText("Saved");
+		} else if(file != null && !fileIsSaved){
+			leftStatus.setText("*" + file.getAbsolutePath());
+			rightStatus.setText("Unsaved");
+		} else if(file == null) {
+			leftStatus.setText("*Untitled.grade");
+			rightStatus.setText("Unsaved");
+		}
+	}
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		snCol.setCellValueFactory(new PropertyValueFactory<Student, Integer>("sn"));

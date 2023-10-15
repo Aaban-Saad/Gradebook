@@ -87,7 +87,7 @@ public class Student {
 				return assessmentMarks.get(i);
 			}
 		}
-		return "0.0";
+		return "";
 	}
 	
 	// Method to set the mark for a specific assessment.

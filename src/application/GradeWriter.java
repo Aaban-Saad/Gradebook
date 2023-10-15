@@ -37,9 +37,9 @@ public class GradeWriter {
         StringBuilder assessmentData = new StringBuilder("<Assessments>\n");
         for (Assessment assessment : assessments) {
 
-            assessmentData.append(assessment.getAssessmentName()).append(",")
-                    .append(assessment.getAssessmentFullMark()).append(",")
-                    .append(assessment.getAssessmentWeight()).append(",")
+            assessmentData.append(assessment.getAssessmentName()).append(", ")
+                    .append(assessment.getAssessmentFullMark()).append(", ")
+                    .append(assessment.getAssessmentWeight()).append(", ")
                     .append(assessment.isCountableForGrade()).append("\n");
         }
         assessmentData.append("</Assessments>");
@@ -53,15 +53,15 @@ public class GradeWriter {
         
         for (Student student : students) {
 
-            studentData.append(student.getSn()).append(",")
-                    .append(student.getId()).append(",")
-                    .append(student.getName()).append(",")
+            studentData.append(student.getSn()).append(", ")
+                    .append(student.getId()).append(", ")
+                    .append(student.getName()).append(", ")
                     .append(student.getGrade());
 
             marks = student.getAssessmentMarks();
             if(marks.size() != 0) {
-            	for (String mark : marks) {
-            		studentData.append(",").append(mark);
+            	for (String mark : marks) {         			
+        			studentData.append(", ").append(mark);
             	}
             }
             studentData.append("\n");
@@ -75,8 +75,8 @@ public class GradeWriter {
         StringBuilder gradeData = new StringBuilder("<Grading>\n");
         for (Grade grade : grades) {
 
-            gradeData.append(grade.getGradeName()).append(",")
-                    .append(grade.getMinNumber()).append(",")
+            gradeData.append(grade.getGradeName()).append(", ")
+                    .append(grade.getMinNumber()).append(", ")
                     .append(grade.getMaxNumber()).append("\n");
         }
         gradeData.append("</Grading>");
@@ -155,15 +155,15 @@ public class GradeWriter {
         studentData.append("\n");
 
         for (Student student : students) {
-            studentData.append(student.getSn()).append(",")
-                    .append(student.getId()).append(",")
-                    .append(student.getName()).append(",")
+            studentData.append(student.getSn()).append(", ")
+                    .append(student.getId()).append(", ")
+                    .append(student.getName()).append(", ")
                     .append(student.getGrade());
 
             marks = student.getAssessmentMarks();
             if(marks.size() != 0) {
             	for (String mark : marks) {
-            		studentData.append(",").append(mark);
+            		studentData.append(", ").append(mark);
             	}
             }
             studentData.append("\n");

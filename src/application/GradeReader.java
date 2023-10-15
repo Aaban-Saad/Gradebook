@@ -55,10 +55,10 @@ public class GradeReader {
                     String[] parts = line.split(",");
                     if (parts.length >= 4) {
                         Assessment assessment = new Assessment();
-                        assessment.setAssessmentName(parts[0]);
-                        assessment.setAssessmentFullMark(Double.parseDouble(parts[1]));
-                        assessment.setAssessmentWeight(Double.parseDouble(parts[2]));
-                        assessment.setCountForGrade(Boolean.parseBoolean(parts[3]));
+                        assessment.setAssessmentName(parts[0].trim());
+                        assessment.setAssessmentFullMark(Double.parseDouble(parts[1].trim()));
+                        assessment.setAssessmentWeight(Double.parseDouble(parts[2].trim()));
+                        assessment.setCountForGrade(Boolean.parseBoolean(parts[3].trim()));
                         assessments.add(assessment);
                     }
                 }
@@ -87,9 +87,9 @@ public class GradeReader {
                     if (parts.length >= 4) {
                         Student student = new Student();
                         student.setSn(Integer.parseInt(parts[0]));
-                        student.setId(parts[1]);
-                        student.setName(parts[2]);
-                        student.setGrade(parts[3]);
+                        student.setId(parts[1].trim());
+                        student.setName(parts[2].trim());
+                        student.setGrade(parts[3].trim());
 
                         ArrayList<String> marks = new ArrayList<>();
                         for(int i = 4; i < parts.length; i++) {
@@ -123,9 +123,9 @@ public class GradeReader {
                     String[] parts = line.split(",");
                     if (parts.length >= 3) {
                         Grade grade = new Grade();
-                        grade.setGradeName(parts[0]);
-                        grade.setMinNumber(parts[1]);
-                        grade.setMaxNumber(parts[2]);
+                        grade.setGradeName(parts[0].trim());
+                        grade.setMinNumber(parts[1].trim());
+                        grade.setMaxNumber(parts[2].trim());
                         grades.add(grade);
                     }
                 }
