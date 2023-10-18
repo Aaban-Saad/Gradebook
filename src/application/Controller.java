@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
@@ -164,7 +165,7 @@ public class Controller implements Initializable{
 			
 			if(student[i].getName().equals("")) break;
 			
-			student[i].setAssessmentNames(assessmentNames);
+			Student.setAssessmentNames(assessmentNames);
 			
 			//setting default marks("") for each assessment in student class
 			ArrayList<String> assessmentMarks = student[i].getAssessmentMarks();
@@ -208,8 +209,6 @@ public class Controller implements Initializable{
 		int i;
 		for(i = 0; i < students.size(); i++) {
 			Student student = students.get(i);
-			student.setAssessmentNames(assessmentNames);
-			
 			ArrayList<String> assessmentMarks = student.getAssessmentMarks();
 			assessmentMarks.add("");
 			student.setAssessmentMarks(assessmentMarks);
@@ -258,6 +257,8 @@ public class Controller implements Initializable{
 //		This is for removing assessments later
 		assessmentChoiceBox.getItems().removeAll(assessmentNames);
 		assessmentChoiceBox.getItems().addAll(assessmentNames); 
+		Student.setAssessmentNames(assessmentNames);
+		System.out.println(assessmentNames + "= " + Student.getAssessmentNames());
 		
 		choiceBoxForMarkCalculation.getItems().removeAll(assessmentNames);
 		choiceBoxForMarkCalculation.getItems().addAll(assessmentNames); 
@@ -344,6 +345,24 @@ public class Controller implements Initializable{
 						}
 					}
 					
+					//removing from  student class
+					ObservableList<Student> students = tableView.getItems();
+					for (Student student : students) {
+						ArrayList<String> markStrings = student.getAssessmentMarks();
+						for (i = 0; i < markStrings.size(); i++) {
+//							System.out.println(student.getAssessmentMarks().size());
+							System.out.println(Student.getAssessmentNames());
+							System.out.println("rem = " +student.getMark(columnToRemove));
+							if(markStrings.get(i).equals(student.getMark(columnToRemove))) {
+								markStrings.remove(i);
+								break;
+							}
+						}
+						System.out.println(markStrings);
+						student.setAssessmentMarks(markStrings);
+					}
+					
+					
 					for(i = 0; i < this.assessmentNames.size(); i++) {
 						if(assessmentNames.get(i).equals(columnToRemove)) {
 							assessmentNames.remove(i);
@@ -354,6 +373,8 @@ public class Controller implements Initializable{
 							break;
 						}
 					}
+					
+					Student.setAssessmentNames(assessmentNames);
 					
 				}
 				break;
@@ -410,17 +431,21 @@ public class Controller implements Initializable{
 			for(i = 0; i < students.size(); i++) {
 				Float average = 0.0f;
 				for(j = 0; j < selectedAssessments.size(); j++) {
-					average += Float.parseFloat(students.get(i).getMark(selectedAssessments.get(j)));
+					try {						
+						average += Float.parseFloat(students.get(i).getMark(selectedAssessments.get(j)));
+					} catch (Exception e) {
+						average += 0.0f;
+					}
 				}
 				average /= selectedAssessments.size();
 //				calculatedAvgMarks[i] = average;
 				
 				//adding to previous mark in column
 				float previousMark;
-				if(students.get(i).getMark(colName).equals("")) {
-					previousMark = 0.0f;
-				} else {						
+				try {
 					previousMark = Float.parseFloat(students.get(i).getMark(colName));
+				} catch (Exception e) {
+					previousMark = 0.0f;
 				}
 				
 				if(addRadioButton.isSelected()) {
@@ -453,19 +478,24 @@ public class Controller implements Initializable{
 			
 			//calculating best
 			for(i = 0; i < students.size(); i++) {
+				marksOfSelectedAssessments = new float[checkBoxes.size()]; //clearing array
 				for(j = 0; j < selectedAssessments.size(); j++) {
-					marksOfSelectedAssessments[j] = Float.parseFloat(students.get(i).getMark(selectedAssessments.get(j)));
+					try {
+						marksOfSelectedAssessments[j] = Float.parseFloat(students.get(i).getMark(selectedAssessments.get(j)));
+					} catch (Exception e) {
+						marksOfSelectedAssessments[j] = 0.0f;
+					}
 				}
 				Arrays.sort(marksOfSelectedAssessments);
-				float best = marksOfSelectedAssessments[j];
+				float best = marksOfSelectedAssessments[marksOfSelectedAssessments.length - 1];
 //				calculatedBestMarks[i] = best;
 				
 				//adding to previous mark in column
 				float previousMark;
-				if(students.get(i).getMark(colName).equals("")) {
-					previousMark = 0.0f;
-				} else {						
+				try {
 					previousMark = Float.parseFloat(students.get(i).getMark(colName));
+				} catch (Exception e) {
+					previousMark = 0.0f;
 				}
 				
 				if(addRadioButton.isSelected()) {
@@ -512,18 +542,31 @@ public class Controller implements Initializable{
 				best_n_Average /= bestN;
 				
 //				//adding or replacing to previous mark in column
-				float previousMark;
-				if(students.get(i).getMark(colName).equals("")) {
-					previousMark = 0.0f;
-				} else {						
+				float previousMark = 0.0f;
+				try {				
 					previousMark = Float.parseFloat(students.get(i).getMark(colName));
-				}
+				} catch (Exception e) {
+					previousMark = 0.0f;
+				} 
 				
 				if(addRadioButton.isSelected()) {
 					students.get(i).setMark(colName, (previousMark + best_n_Average)+"");					
 				} else if(replaceRadioButton.isSelected()) {
 					students.get(i).setMark(colName, best_n_Average+"");
 				}
+				
+//				float previousMark;
+//				if(students.get(i).getMark(colName).equals("")) {
+//					previousMark = 0.0f;
+//				} else {						
+//					previousMark = Float.parseFloat(students.get(i).getMark(colName));
+//				}
+//				
+//				if(addRadioButton.isSelected()) {
+//					students.get(i).setMark(colName, (previousMark + best_n_Average)+"");					
+//				} else if(replaceRadioButton.isSelected()) {
+//					students.get(i).setMark(colName, best_n_Average+"");
+//				}
 			}
 			
 			tableView.setItems(students);
@@ -536,21 +579,17 @@ public class Controller implements Initializable{
 			ObservableList<Student> students = tableView.getItems();
 			int i;
 			for(i = 0; i < students.size(); i++) {
-				try {
-					float previousMark;
-					if(students.get(i).getMark(colName).equals("")) {
-						previousMark = 0.0f;
-					} else {						
-						previousMark = Float.parseFloat(students.get(i).getMark(colName));
-					}
-					
+				float previousMark = 0.0f;
+				try {				
+					previousMark = Float.parseFloat(students.get(i).getMark(colName));
+				} catch (Exception e) {
+					previousMark = 0.0f;
+				} finally {
 					if(addRadioButton.isSelected()) {
 						students.get(i).setMark(colName, (previousMark + markToAdd)+"");					
 					} else if(replaceRadioButton.isSelected()) {
 						students.get(i).setMark(colName, markToAdd+"");
 					}
-				} catch (Exception e) {
-					// do nothing
 				}
 			}
 			tableView.setItems(students);
@@ -585,7 +624,12 @@ public class Controller implements Initializable{
 			for(j = 0; j < assessmentsForGrade.size(); j++) {
 				if(!assessmentsForGrade.get(j).isCountableForGrade()) continue;
 				String assessmentName = assessmentsForGrade.get(j).getAssessmentName();
-				double mark = Double.parseDouble(students.get(i).getMark(assessmentName));
+				double mark;
+				try {
+					mark = Double.parseDouble(students.get(i).getMark(assessmentName));
+				} catch (Exception e) {
+					mark = 0.0;
+				}
 				finalScore += mark * assessmentsForGrade.get(j).getAssessmentWeight() / assessmentsForGrade.get(j).getAssessmentFullMark();
 			}
 			
@@ -792,7 +836,7 @@ public class Controller implements Initializable{
 		
 		//removing table columns
 		for(int i = 0; i < tableView.getColumns().size(); i++) {
-			System.out.println(tableView.getColumns().get(i).getText());
+//			System.out.println(tableView.getColumns().get(i).getText());
 			if(tableView.getColumns().get(i).getText().equals("SN")  ||
 			tableView.getColumns().get(i).getText().equals("ID") ||
 			tableView.getColumns().get(i).getText().equals("Name") ||
@@ -817,9 +861,9 @@ public class Controller implements Initializable{
 		ArrayList<Grade> grades = gradeReader.readGrade();
 		gradeReader.close();
 		
-		System.out.println(students);
-		System.out.println(assessments);
-		System.out.println(grades);
+//		System.out.println(students);
+//		System.out.println(assessments);
+//		System.out.println(grades);
 		
 		ObservableList<Student> studentoList = tableView.getItems();
 		studentoList.clear();
@@ -848,6 +892,7 @@ public class Controller implements Initializable{
 		for (Assessment assessment : assessments) {
 			this.assessmentNames.add(assessment.getAssessmentName());
 		}
+		Student.setAssessmentNames(assessmentNames); //this line is important.
 		
 		//for removing assessment later
 		assessmentChoiceBox.getItems().clear();
@@ -881,7 +926,6 @@ public class Controller implements Initializable{
 		column.setCellValueFactory(c -> {
 		    Student student = c.getValue();
 		    String mark = student.getMark(colName);
-
 		    return new ReadOnlyObjectWrapper<>(mark);
 		});
 		
@@ -912,7 +956,7 @@ public class Controller implements Initializable{
 		
 
 		for(int i = 0; i < tableView.getColumns().size(); i++) {
-			System.out.println(tableView.getColumns().get(i).getText());
+//			System.out.println(tableView.getColumns().get(i).getText());
 			if(tableView.getColumns().get(i).getText().equals("SN")  ||
 			tableView.getColumns().get(i).getText().equals("ID") ||
 			tableView.getColumns().get(i).getText().equals("Name") ||
