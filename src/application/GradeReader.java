@@ -93,7 +93,7 @@ public class GradeReader {
 
                         ArrayList<String> marks = new ArrayList<>();
                         for(int i = 4; i < parts.length; i++) {
-                            marks.add(parts[i]);
+                            marks.add(parts[i].trim());
                         }
                         student.setAssessmentMarks(marks);
                         students.add(student);

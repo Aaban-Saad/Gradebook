@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -529,11 +530,20 @@ public class Controller implements Initializable{
 			for(i = 0; i < students.size(); i++) {
 				marksOfSelectedAssessments = new float[checkBoxes.size()];
 				for(j = 0; j < selectedAssessments.size(); j++) {
-					marksOfSelectedAssessments[j] = Float.parseFloat(students.get(i).getMark(selectedAssessments.get(j)));
+					try {						
+						marksOfSelectedAssessments[j] = Float.parseFloat(students.get(i).getMark(selectedAssessments.get(j)));
+					} catch (Exception e) {
+						marksOfSelectedAssessments[j] = 0.0f;
+					}
 				}
 				Arrays.sort(marksOfSelectedAssessments);
 				
-				int bestN = Integer.parseInt(best_n_textField.getText());
+				int bestN;
+				try {					
+					bestN = Integer.parseInt(best_n_textField.getText());
+				} catch (Exception e) {
+					return;
+				}
 				
 				float best_n_Average = 0.0f;
 				for(j = marksOfSelectedAssessments.length - 1; j > marksOfSelectedAssessments.length - bestN - 1; j--) {
