@@ -100,7 +100,6 @@ public abstract class ControllerSkeleton {
     @FXML
     protected Label leftStatus;
 
-
     @FXML
     protected CheckBox lockTable;
 
@@ -147,82 +146,52 @@ public abstract class ControllerSkeleton {
 	protected ListView<CheckBox> listViewForMarkCalculation;
     
     @FXML
-    abstract void addAssessment(ActionEvent event);;
+    abstract void addAssessment();;
 
     @FXML
-    abstract void addGrade(ActionEvent event);  
-
-     
+    abstract void addGrade();  
 
     @FXML
-    abstract void addIdName(ActionEvent event);  
-
-     
+    abstract void addIdName();  
 
     @FXML
-    abstract void calculateGrade(ActionEvent event);  
-
-     
+    abstract void calculateGrade();  
 
     @FXML
-    abstract void calculateMark(ActionEvent event);  
-
-     
+    abstract void calculateMark();      
 
     @FXML
-    abstract void getDefaultGradingTable(ActionEvent event);  
-
-     
+    abstract void getDefaultGradingTable();     
 
     @FXML
-    abstract void lockTable(ActionEvent event);  
-
-     
+    abstract void lockTable();     
 
     @FXML
-    abstract void markCalculationProcess(ActionEvent event);  
-
+    abstract void markCalculationProcess();  
      
-
     @FXML
     abstract void newFile();  
-
-     
 
     @FXML
     abstract void openFile();  
 
-     
+    @FXML
+    abstract void recalculateSerialNumber();  
 
     @FXML
-    abstract void recalculateSerialNumber(ActionEvent event);  
-
-     
+    abstract void removeAssessment();  
 
     @FXML
-    abstract void removeAssessment(ActionEvent event);  
-
-     
+    abstract void removeGrade();  
 
     @FXML
-    abstract void removeGrade(ActionEvent event);  
-
-     
+    abstract void removeStudent();  
 
     @FXML
-    abstract void removeStudent(ActionEvent event);  
-
-     
-
-    @FXML
-    abstract void saveAs();  
-
-     
+    abstract void saveAs();       
 
     @FXML
     abstract void saveCSV();  
-
-     
 
     @FXML
     abstract void saveFile();  
