@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
-public class Controller implements Initializable{
+public class Controller extends ControllerSkeleton implements Initializable{
 	//These 2 has to be initialized from file first;
 	private ArrayList<String> assessmentNames = new ArrayList<>(); //For student class
 	private ArrayList<Assessment> assessmentsArrayList = new ArrayList<>(); //this is for the mini right table (Assessment class)
@@ -45,106 +45,9 @@ public class Controller implements Initializable{
 	
 	private boolean saveFileExists = false;
 	private boolean fileIsSaved = false;
-	
-	@FXML
-    private CheckBox lockTable;
-	
-	@FXML
-	private TableView<Student> tableView;
-	
-    @FXML
-    private TableView<Assessment> assessmentMarksTable;
-    
-    @FXML
-    private TableColumn<Assessment, Double> assessmentFullMarkCol;
-
-    @FXML
-    private TableColumn<Assessment, String> assessmentNameCol;
-
-    @FXML
-    private TableColumn<Assessment, Double> assessmentWeightCol;
-    
-    @FXML
-    private TableColumn<Assessment, CheckBox> assessmentCountColumn;
-	
-	@FXML
-    private TableColumn<Student, Integer> snCol;
-	
-	@FXML
-    private TableColumn<Student, String> idCol;
-	
-	@FXML
-    private TableColumn<Student, String> nameCol;
-	
-	@FXML
-    private TableColumn<Student, String> gradeCol;
-
-	@FXML
-    private TextArea enterId;
-
-    @FXML
-    private TextArea enterName;
-    
-    @FXML
-    private TextField enterAssessment;
-
-    @FXML
-    private TextField idToRemove;
-    
-    @FXML
-    private ChoiceBox<String> assessmentChoiceBox;
-    
-    @FXML
-    private RadioButton averageRadioButton;
-
-    @FXML
-    private RadioButton bestRadioButton;
-
-    @FXML
-    private RadioButton best_n_RadioButton;
-
-    @FXML
-    private RadioButton bonusRadioButton;
-    
-    @FXML
-    private TextField bonusTextField;
-
-    @FXML
-    private TextField best_n_textField;
-    
-    @FXML
-    private ChoiceBox<String> choiceBoxForMarkCalculation;
-    
-    @FXML
-    private ListView<CheckBox> listViewForMarkCalculation;
-    
-    @FXML
-    private RadioButton replaceRadioButton;
-    
-    @FXML
-    private RadioButton addRadioButton;
-    
-    @FXML
-    private TableView<Grade> gradingTable;
-    
-    @FXML
-    private TableColumn<Grade, String> gradeFromCol;
-    
-    @FXML
-    private TableColumn<Grade, String> gradeToCol;
-
-    @FXML
-    private TableColumn<Grade, String> gradeNameCol;
-    
-    @FXML
-    private Label leftStatus;
-    
-    @FXML
-    private Label rightStatus;
-
-
-    
-	public void addIdName(ActionEvent event) {
+  
+	@Override
+	void addIdName(ActionEvent event) {
 		if(tableIsLocked) return;
 		
 		int i, j;
@@ -187,8 +90,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	
-	public void addAssessment(ActionEvent event) {
+	@Override
+	void addAssessment(ActionEvent event) {
 		if(tableIsLocked) return;
 		
 		String assessmentName = enterAssessment.getText().trim();
@@ -196,7 +99,7 @@ public class Controller implements Initializable{
 		if(assessmentName.equals("")) return;
 		
 		
-		TableColumn<Student, String> assessmentCol = new TableColumn<> (assessmentName);
+		TableColumn<Student, String> assessmentCol = new TableColumn<>();
 		assessmentNames.add(assessmentName);
 		
 		Assessment assessment = new Assessment();
@@ -231,6 +134,8 @@ public class Controller implements Initializable{
 					Student student = arg0.getRowValue();
 					String newMark = arg0.getNewValue();
 					student.setMark(assessmentName, newMark);
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 
 				tableView.refresh();
@@ -276,8 +181,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	
-	public void recalculateSerialNumber(ActionEvent event) {
+	@Override
+	void recalculateSerialNumber(ActionEvent event) {
 		if(!tableIsLocked) {
 			ObservableList<Student> students = tableView.getItems();
 			int i;
@@ -293,11 +198,13 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void lockTable(ActionEvent event) {
+	@Override
+	void lockTable(ActionEvent event) {
 		tableIsLocked = lockTable.isSelected() ? true : false;
 	}
 	
-	public void removeStudent(ActionEvent event) {
+	@Override
+	void removeStudent(ActionEvent event) {
 		if(tableIsLocked) return;
 		
 		ObservableList<Student> students = tableView.getItems();
@@ -321,7 +228,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void removeAssessment(ActionEvent event) {
+	@Override
+	void removeAssessment(ActionEvent event) {
 		if(tableIsLocked) return;
 		
 		ObservableList<TableColumn<Student, ?>> tableColumns = tableView.getColumns();
@@ -351,7 +259,6 @@ public class Controller implements Initializable{
 					for (Student student : students) {
 						ArrayList<String> markStrings = student.getAssessmentMarks();
 						for (i = 0; i < markStrings.size(); i++) {
-//							System.out.println(student.getAssessmentMarks().size());
 							System.out.println(Student.getAssessmentNames());
 							System.out.println("rem = " +student.getMark(columnToRemove));
 							if(markStrings.get(i).equals(student.getMark(columnToRemove))) {
@@ -387,8 +294,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	
-	public void markCalculationProcess(ActionEvent event) {
+	@Override
+	void markCalculationProcess(ActionEvent event) {
 		if(averageRadioButton.isSelected()) {
 			best_n_textField.setDisable(true);
 			bonusTextField.setDisable(true);
@@ -410,14 +317,14 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void calculateMark(ActionEvent event) {
+	@Override
+	void calculateMark(ActionEvent event) {
 		if(tableIsLocked) return;
 		
 		if(averageRadioButton.isSelected()) {
 			int i, j;
 			ObservableList<CheckBox> checkBoxes = listViewForMarkCalculation.getItems();
 			ArrayList<String> selectedAssessments = new ArrayList<>();
-//			double[] calculatedAvgMarks = new double[tableView.getItems().size()];
 			ObservableList<Student> students = tableView.getItems();
 			String colName = choiceBoxForMarkCalculation.getValue();
 			
@@ -439,8 +346,7 @@ public class Controller implements Initializable{
 					}
 				}
 				average /= selectedAssessments.size();
-//				calculatedAvgMarks[i] = average;
-				
+
 				//adding to previous mark in column
 				float previousMark;
 				try {
@@ -460,13 +366,16 @@ public class Controller implements Initializable{
 			tableView.refresh();
 			averageRadioButton.setSelected(false);
 			
+			fileIsSaved = false;
+			
+			setFooter(savingFile);
+			
 		} 
 		else if(bestRadioButton.isSelected()) {
 			int i, j;
 			ObservableList<CheckBox> checkBoxes = listViewForMarkCalculation.getItems();
 			ArrayList<String> selectedAssessments = new ArrayList<>();
 			float[] marksOfSelectedAssessments = new float[checkBoxes.size()]; //of 1 student
-//			double[] calculatedBestMarks = new double[tableView.getItems().size()];//of all students
 			ObservableList<Student> students = tableView.getItems();
 			String colName = choiceBoxForMarkCalculation.getValue();
 			
@@ -489,7 +398,6 @@ public class Controller implements Initializable{
 				}
 				Arrays.sort(marksOfSelectedAssessments);
 				float best = marksOfSelectedAssessments[marksOfSelectedAssessments.length - 1];
-//				calculatedBestMarks[i] = best;
 				
 				//adding to previous mark in column
 				float previousMark;
@@ -564,19 +472,6 @@ public class Controller implements Initializable{
 				} else if(replaceRadioButton.isSelected()) {
 					students.get(i).setMark(colName, best_n_Average+"");
 				}
-				
-//				float previousMark;
-//				if(students.get(i).getMark(colName).equals("")) {
-//					previousMark = 0.0f;
-//				} else {						
-//					previousMark = Float.parseFloat(students.get(i).getMark(colName));
-//				}
-//				
-//				if(addRadioButton.isSelected()) {
-//					students.get(i).setMark(colName, (previousMark + best_n_Average)+"");					
-//				} else if(replaceRadioButton.isSelected()) {
-//					students.get(i).setMark(colName, best_n_Average+"");
-//				}
 			}
 			
 			tableView.setItems(students);
@@ -613,18 +508,14 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void calculateGrade() {
+	@Override
+	void calculateGrade(ActionEvent e) {
 		if(tableIsLocked) return;
 		
 		gradeCol.setVisible(true);
 		
 		ObservableList<Assessment> assessmentsForGrade = assessmentMarksTable.getItems();
 		int i, j;
-//		for(i = 0; i < assessmentsForGrade.size(); i++) {
-//			if(!assessmentsForGrade.get(i).isCountableForGrade()) {
-//				assessmentsForGrade.remove(i);
-//			}
-//		}
 		
 		ObservableList<Student> students = tableView.getItems();
 
@@ -637,7 +528,7 @@ public class Controller implements Initializable{
 				double mark;
 				try {
 					mark = Double.parseDouble(students.get(i).getMark(assessmentName));
-				} catch (Exception e) {
+				} catch (Exception ex) {
 					mark = 0.0;
 				}
 				finalScore += mark * assessmentsForGrade.get(j).getAssessmentWeight() / assessmentsForGrade.get(j).getAssessmentFullMark();
@@ -660,39 +551,12 @@ public class Controller implements Initializable{
 				}
 				
 				if(Math.ceil(finalScore) >= min && finalScore <= max) {
-//					students.get(i).setGrade(finalScore+"");
 					students.get(i).setGrade(grade.getGradeName() + "  (" +finalScore + "%)");
 					break;
 				}
 			}
-//			if(finalScore >= 93) {
-//				students.get(i).setGrade("A");
-//			} else if (finalScore >= 90 && finalScore <= 92){
-//				students.get(i).setGrade("A-");
-//			} else if (finalScore >= 87 && finalScore <= 89){
-//				students.get(i).setGrade("B+");
-//			} else if (finalScore >= 83 && finalScore <= 86){
-//				students.get(i).setGrade("B");
-//			} else if (finalScore >= 80 && finalScore <= 82){
-//				students.get(i).setGrade("B-");
-//			} else if (finalScore >= 77 && finalScore <= 79){
-//				students.get(i).setGrade("C+");
-//			} else if (finalScore >= 73 && finalScore <= 76){
-//				students.get(i).setGrade("C");
-//			} else if (finalScore >= 70 && finalScore <= 72){
-//				students.get(i).setGrade("C-");
-//			} else if (finalScore >= 67 && finalScore <= 79){
-//				students.get(i).setGrade("D+");
-//			} else if (finalScore >= 60 && finalScore <= 66){
-//				students.get(i).setGrade("D");
-//			} else if (finalScore < 60){
-//				students.get(i).setGrade("F");
-//			}
 		}
-		
-//		for(i = 0; i < students.size(); i++) {
-//			students.get(i).setGrade("A");
-//		}
+
 		tableView.setItems(students);
 		tableView.refresh();
 		
@@ -702,7 +566,8 @@ public class Controller implements Initializable{
 		
 	}
 	
-	public void addGrade() {
+	@Override
+	void addGrade(ActionEvent e) {
 		Grade grade = new Grade();
 		ObservableList<Grade> grades= gradingTable.getItems();
 		grades.add(grade);
@@ -714,11 +579,12 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void removeGrade() {
+	@Override
+	void removeGrade(ActionEvent e) {
 		int row = gradingTable.getSelectionModel().getSelectedIndex();
 		try {
 			gradingTable.getItems().remove(row);
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			// do nothing
 		}
 		
@@ -727,7 +593,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void getDefaultGradingTable() {
+	@Override
+	void getDefaultGradingTable(ActionEvent e) {
 		ObservableList<Grade> grades = gradingTable.getItems();
 		grades.clear();
 		gradingTable.setItems(grades);
@@ -750,7 +617,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void saveFile() {
+	@Override
+	void saveFile() {
 		if(!saveFileExists) {
 			saveFileExists = true;
 			saveAs();
@@ -781,7 +649,8 @@ public class Controller implements Initializable{
 		setFooter(savingFile);
 	}
 	
-	public void saveAs() {
+	@Override
+	void saveAs() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Gradebook File", "*.grade"));
 		File file = fileChooser.showSaveDialog(null);
@@ -812,7 +681,8 @@ public class Controller implements Initializable{
 		setFooter(file);
 	}
 	
-	public void saveCSV() {
+	@Override
+	void saveCSV() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV File", "*.csv"));
 		File file = fileChooser.showSaveDialog(null);
@@ -829,7 +699,8 @@ public class Controller implements Initializable{
 		gradeWriter.close();
 	}
 	
-	public void openFile() {
+	@Override
+	void openFile() {
 		if(!fileIsSaved) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("Gradebook");
@@ -846,7 +717,7 @@ public class Controller implements Initializable{
 		
 		//removing table columns
 		for(int i = 0; i < tableView.getColumns().size(); i++) {
-//			System.out.println(tableView.getColumns().get(i).getText());
+
 			if(tableView.getColumns().get(i).getText().equals("SN")  ||
 			tableView.getColumns().get(i).getText().equals("ID") ||
 			tableView.getColumns().get(i).getText().equals("Name") ||
@@ -870,10 +741,6 @@ public class Controller implements Initializable{
 		gradeReader = new GradeReader(file);
 		ArrayList<Grade> grades = gradeReader.readGrade();
 		gradeReader.close();
-		
-//		System.out.println(students);
-//		System.out.println(assessments);
-//		System.out.println(grades);
 		
 		ObservableList<Student> studentoList = tableView.getItems();
 		studentoList.clear();
@@ -919,6 +786,7 @@ public class Controller implements Initializable{
 			
 			TableColumn<Student, String> assessmentCol = new TableColumn<> (assessment.getAssessmentName());
 			initializeColumn(assessmentCol, assessment.getAssessmentName());
+			tableView.getColumns().add(assessmentCol);
 		}
 		
 		tableView.setItems(studentoList);
@@ -932,26 +800,27 @@ public class Controller implements Initializable{
 		setFooter(file);
 	}
 	
-	private void initializeColumn(TableColumn<Student, String> column, String colName) {
-		column.setCellValueFactory(c -> {
+	private void initializeColumn(TableColumn<Student, String> tableColumn, String colName) {
+		tableColumn.setCellValueFactory(c -> {
 		    Student student = c.getValue();
 		    String mark = student.getMark(colName);
 		    return new ReadOnlyObjectWrapper<>(mark);
 		});
 		
-		column.setCellFactory(TextFieldTableCell.forTableColumn());
-		column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Student,String>>() {
+		tableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		tableColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Student,String>>() {
 			@Override
 			public void handle(CellEditEvent<Student, String> arg0) {
 				
 				Student student = arg0.getRowValue();
 				String newMark = arg0.getNewValue();
 				student.setMark(colName, newMark);
-				
+				fileIsSaved = false;
+				setFooter(savingFile);
 				tableView.refresh();
 			}
 		});;
-		tableView.getColumns().add(column);
+		
 	}
 
 	public void newFile() {
@@ -966,7 +835,6 @@ public class Controller implements Initializable{
 		
 
 		for(int i = 0; i < tableView.getColumns().size(); i++) {
-//			System.out.println(tableView.getColumns().get(i).getText());
 			if(tableView.getColumns().get(i).getText().equals("SN")  ||
 			tableView.getColumns().get(i).getText().equals("ID") ||
 			tableView.getColumns().get(i).getText().equals("Name") ||
@@ -1034,12 +902,13 @@ public class Controller implements Initializable{
 		idCol.setCellValueFactory(new PropertyValueFactory<Student, String>("id"));
 		idCol.setCellFactory(TextFieldTableCell.forTableColumn());
 		idCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Student,String>>() {
-			
 			@Override
 			public void handle(CellEditEvent<Student, String> arg0) {
 				if(!tableIsLocked) {
 					Student student = arg0.getRowValue();
 					student.setId(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				tableView.refresh();
 			}
@@ -1054,6 +923,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Student student = arg0.getRowValue();
 					student.setName(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				tableView.refresh();
 			}
@@ -1068,6 +939,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Student student = arg0.getRowValue();
 					student.setGrade(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				tableView.refresh();
 			}
@@ -1081,42 +954,40 @@ public class Controller implements Initializable{
 			@Override
 			public void handle(CellEditEvent<Assessment, String> arg0) {
 				if(!tableIsLocked) {
+					int i;
 					Assessment a = arg0.getRowValue();
+					String oldValueString = a.getAssessmentName();
 					String newValueString = arg0.getNewValue();
 					
-					//now editing other related stuff
-					 int i;
-					 for(i = 0; i < assessmentNames.size(); i++) {
-						 if(assessmentNames.get(i).equals(a.getAssessmentName())) {
-							 assessmentNames.set(i, newValueString);
-							 assessmentsArrayList.set(i, a);
-							 assessmentChoiceBox.getItems().set(i, newValueString);
-							 choiceBoxForMarkCalculation.getItems().set(i, newValueString);
-							 break;
-						 }
-					 }
-					 
-					 
-//					 changing name in main table
-					 for(i = 0; i < tableView.getColumns().size(); i++) {
-						 if(tableView.getColumns().get(i).getText().equals(a.getAssessmentName())) {
-							 tableView.getColumns().get(i).setText(newValueString);
-							 tableView.refresh();
-							 break;
-						 }
-					 }
-					 
-//					 changing name in student class
-					 try {
-						 tableView.getItems().get(0).setAssessmentNames(assessmentNames); //used get(0) because assessmentNames is static						
-					 } catch (Exception e) {
-						//If table is empty do nothing
-					 }
-
-					
 					a.setAssessmentName(newValueString);
+					
+					//now editing other related stuff
+					 
+					for(i = 0; i < assessmentNames.size(); i++) {
+						if(assessmentNames.get(i).equals(oldValueString)) {
+							assessmentNames.set(i, newValueString);
+							assessmentsArrayList.set(i, a);
+							assessmentChoiceBox.getItems().set(i, newValueString);
+							choiceBoxForMarkCalculation.getItems().set(i, newValueString);
+							break;
+						}
+					}
+					
+//					changing name in main table
+					for(i = 0; i < tableView.getColumns().size(); i++) {
+						if(tableView.getColumns().get(i).getText().equals(oldValueString)) {
+							tableView.getColumns().get(i).setText(newValueString);
+							initializeColumn((TableColumn<Student, String>) tableView.getColumns().get(i), newValueString);
+							tableView.refresh();
+							break;
+						}
+					}
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
+				
 				assessmentMarksTable.refresh();
+				System.out.println(Student.getAssessmentNames());
 			}
 		});;
 		
@@ -1130,6 +1001,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Assessment a = arg0.getRowValue();
 					a.setAssessmentFullMark(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				assessmentMarksTable.refresh();
 			}
@@ -1144,6 +1017,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Assessment a = arg0.getRowValue();
 					a.setAssessmentWeight(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				assessmentMarksTable.refresh();
 			}
@@ -1161,6 +1036,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Grade grade = arg0.getRowValue();
 					grade.setMinNumber(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				tableView.refresh();
 			}
@@ -1175,6 +1052,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Grade grade = arg0.getRowValue();
 					grade.setMaxNumber(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				tableView.refresh();
 			}
@@ -1189,6 +1068,8 @@ public class Controller implements Initializable{
 				if(!tableIsLocked) {
 					Grade grade = arg0.getRowValue();
 					grade.setGradeName(arg0.getNewValue());
+					fileIsSaved = false;
+					setFooter(savingFile);
 				}
 				tableView.refresh();
 			}
