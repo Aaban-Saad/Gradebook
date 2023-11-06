@@ -1,7 +1,18 @@
+
 # Gradebook
-A JavaFx project for our faculty.
+A JavaFx project dedicated to our faculty.
 
-I am doing this project for making the grading and curving process much easier.
+Gradebook is a specialized academic grading and assessment management application inspired by Microsoft Excel. The main purpose of this project is to make the marking and grading process much easier and faster.
 
-## Demo
-![Screenshot (6)](https://github.com/Aaban-Saad/Gradebook/assets/113811911/7c643db0-1918-417c-9966-ef967cd69a02)
+![Screenshot (14)](https://github.com/Aaban-Saad/Gradebook/assets/113811911/488d210d-3252-4382-8de8-4fb2256eeb05)
+
+## Features
+
+- Copy student data (name & ID) from an existing XLSX file
+- Custom Gradebook File Format (GradebookFile.grade)
+- Flexible UI components
+- Adjust the exam's full marks and weight
+- Easily calculate the best quizzes, averages etc.
+- Customize the grading policy
+- Export CSV files for sharing online
+
