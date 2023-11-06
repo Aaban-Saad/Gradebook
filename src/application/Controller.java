@@ -112,6 +112,10 @@ public class Controller extends ControllerSkeleton implements Initializable{
 	    setFooter(savingFile);
 	}
 	
+	/**
+	 * Handles the action of adding an assessment to the table and related components.
+	 *
+	 */
 	@Override
 	void addAssessment() {
 	    if (tableIsLocked) return;
