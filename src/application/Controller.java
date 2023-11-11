@@ -127,7 +127,7 @@ public class Controller extends ControllerSkeleton implements Initializable{
 	    if (assessmentName.equals("")) return;
 
 	    // Create a new TableColumn for the assessment
-	    TableColumn<Student, String> assessmentCol = new TableColumn<>();
+	    TableColumn<Student, String> assessmentCol = new TableColumn<>(assessmentName);
 	    assessmentNames.add(assessmentName);
 
 	    // Create a new Assessment object and add it to the list of assessments
@@ -1228,7 +1228,8 @@ public class Controller extends ControllerSkeleton implements Initializable{
 							assessmentNames.set(i, newValueString);
 							assessmentsArrayList.set(i, a);
 							assessmentChoiceBox.getItems().set(i, newValueString);
-							choiceBoxForMarkCalculation.getItems().set(i, newValueString);
+							choiceBoxForMarkCalculation.getItems().set(i, newValueString);;
+						    listViewForMarkCalculation.getItems().get(i).setText(newValueString);
 							break;
 						}
 					}
