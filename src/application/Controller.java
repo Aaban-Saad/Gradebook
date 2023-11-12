@@ -526,11 +526,13 @@ public class Controller extends ControllerSkeleton implements Initializable{
 	            } catch (Exception e) {
 	                return;
 	            }
+	            if(bestN == 0) return;
 
 	            float best_n_Average = 0.0f;
 	            for (j = marksOfSelectedAssessments.length - 1; j > marksOfSelectedAssessments.length - bestN - 1; j--) {
 	                best_n_Average += marksOfSelectedAssessments[j];
 	            }
+	            
 	            best_n_Average /= bestN;
 
 	            // Add or replace the calculated best_n average to the specified mark column
@@ -631,25 +633,30 @@ public class Controller extends ControllerSkeleton implements Initializable{
 
 	        for (Grade grade : grades) {
 	            double min, max;
+	            try {
+	            	if (!grade.getMinNumber().trim().equals("*")) {
+		                min = Double.parseDouble(grade.getMinNumber());
+		            } else {
+		                min = Double.MIN_VALUE;
+		            }
 
-	            if (!grade.getMinNumber().trim().equals("*")) {
-	                min = Double.parseDouble(grade.getMinNumber());
-	            } else {
-	                min = Double.MIN_VALUE;
-	            }
+		            if (!grade.getMaxNumber().trim().equals("*")) {
+		                max = Double.parseDouble(grade.getMaxNumber());
+		            } else {
+		                max = Double.MAX_VALUE;
+		            }
 
-	            if (!grade.getMaxNumber().trim().equals("*")) {
-	                max = Double.parseDouble(grade.getMaxNumber());
-	            } else {
-	                max = Double.MAX_VALUE;
-	            }
-
-	            // Check if the final score falls within the grade range
-	            if (Math.ceil(finalScore) >= min && finalScore <= max) {
-	                // Set the grade for the student
-	                students.get(i).setGrade(grade.getGradeName() + "  (" + finalScore + "%)");
+		            // Check if the final score falls within the grade range
+		            if (Math.ceil(finalScore) >= min && finalScore <= max) {
+		                // Set the grade for the student
+		                students.get(i).setGrade(grade.getGradeName() + "  (" + finalScore + "%)");
+		                break;
+		            }
+				} catch (Exception e) {
+					students.get(i).setGrade("Error!");
 	                break;
-	            }
+				}
+	            
 	        }
 	    }
 
